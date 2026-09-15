@@ -1,26 +1,27 @@
 const Resume = require("../models/resume");
 const cloudinary = require("../config/cloudinary");
 
+
 const uploadResume = async (req, res) => {
     try {
 
-        // PDF check
+        // 1. Check PDF
         if (!req.file) {
             return res.status(400).json({
                 message: "Resume file is required"
             });
         }
 
-        // Frontend se userId aayegi
-        const userId = req.body.userId;
+        // 2. User ID
+       /* const userId = req.body.userId;
 
         if (!userId) {
             return res.status(400).json({
                 message: "User ID is required"
             });
-        }
+        }*/
 
-        // Cloudinary upload
+        // 3. Upload PDF to Cloudinary
         const result = await new Promise((resolve, reject) => {
 
             const stream = cloudinary.uploader.upload_stream(
@@ -43,25 +44,34 @@ const uploadResume = async (req, res) => {
             stream.end(req.file.buffer);
         });
 
-
-        // MongoDB me resume save
+        // 4. Save resume in MongoDB
         const newResume = await Resume.create({
 
-            user: userId,
+           /*user: userId,*/
 
             resumeName: req.file.originalname,
 
-            fileUrl: result.secure_url
+            fileUrl: result.secure_url,
+
+            score: 0,
+
+            skills: [],
+
+            analysis: ""
 
         });
 
-
+        // 5. Response
         res.status(201).json({
+
             message: "Resume uploaded successfully",
+
             resume: newResume
+
         });
 
     } catch (error) {
+        console.log(error)
 
         res.status(500).json({
             message: error.message
