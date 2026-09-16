@@ -53,6 +53,7 @@ const signup = async (req, res) => {
 
 
 // ================= LOGIN =================
+//REFRESH TOKEN CREATED IN LOGIN SECTION 
 
 const login = async (req, res) => {
     try {
@@ -81,7 +82,7 @@ const login = async (req, res) => {
         }
 
         // create JWT
-        const token = jwt.sign(
+        const accesstoken = jwt.sign(
             {
                 userId: user._id,
                 role: user.role
@@ -91,9 +92,24 @@ const login = async (req, res) => {
                 expiresIn: "1d"
             }
         );
+           const refreshtoken = jwt.sign(
+             { userId : user._id,
+              role: user.role
+             },
+             process.env.REFRESH_TOKEN_SECRET,
+             {
+                expiresIn:"7d"
+             }
+           );
 
         // cookie
-        res.cookie("token", token, {
+        //access
+        res.cookie("token", accesstoken, {
+            httpOnly: true,
+            secure: false,
+            sameSite: "lax"
+        });
+        res.cookie("refresToken", refreshtoken, {
             httpOnly: true,
             secure: false,
             sameSite: "lax"
@@ -118,11 +134,67 @@ const login = async (req, res) => {
 const logout = async (req, res) => {
 
     res.clearCookie("token");
+     res.clearCookie("refresToken");
 
     res.json({
         message: "Logout successful"
     });
 
+};
+
+
+   // ================= REFRESH TOKEN =================
+
+const refresh = async (req, res) => {
+    try {
+
+        // 1. Cookie se refresh token nikalo
+        const refreshToken = req.cookies.refreshToken;
+
+        // 2. Refresh token nahi mila
+        if (!refreshToken) {
+            return res.status(401).json({
+                message: "Refresh token missing"
+            });
+        }
+
+        // 3. Refresh token verify karo
+        const decoded = jwt.verify(
+            refreshToken,
+            process.env.REFRESH_TOKEN_SECRET
+        );
+
+        // 4. Naya access token banao
+        const newAccessToken = jwt.sign(
+            {
+                userId: decoded.userId,
+                role: decoded.role
+            },
+            process.env.JWT_SECRET,
+            {
+                expiresIn: "1d"
+            }
+        );
+
+        // 5. Naya access token cookie mein save karo
+        res.cookie("token", newAccessToken, {
+            httpOnly: true,
+            secure: false,
+            sameSite: "lax"
+        });
+
+        // 6. Response
+        res.json({
+            message: "Access token refreshed"
+        });
+
+    } catch (error) {
+
+        res.status(401).json({
+            message: "Invalid or expired refresh token"
+        });
+
+    }
 };
 
 

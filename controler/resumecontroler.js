@@ -12,14 +12,8 @@ const uploadResume = async (req, res) => {
             });
         }
 
-        // 2. User ID
-       /* const userId = req.body.userId;
-
-        if (!userId) {
-            return res.status(400).json({
-                message: "User ID is required"
-            });
-        }*/
+      
+        
 
         // 3. Upload PDF to Cloudinary
         const result = await new Promise((resolve, reject) => {
@@ -47,7 +41,7 @@ const uploadResume = async (req, res) => {
         // 4. Save resume in MongoDB
         const newResume = await Resume.create({
 
-           /*user: userId,*/
+           user: req.user.userId,
 
             resumeName: req.file.originalname,
 
