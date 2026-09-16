@@ -116,7 +116,9 @@ const login = async (req, res) => {
         });
 
         res.status(200).json({
-            message: "Login successful"
+            message: "Login successful",
+            accesstoken,
+            refreshtoken
         });
 
     } catch (error) {
@@ -129,18 +131,7 @@ const login = async (req, res) => {
 };
 
 
-// ================= LOGOUT =================
 
-const logout = async (req, res) => {
-
-    res.clearCookie("token");
-     res.clearCookie("refresToken");
-
-    res.json({
-        message: "Logout successful"
-    });
-
-};
 
 
    // ================= REFRESH TOKEN =================
@@ -198,6 +189,21 @@ const refresh = async (req, res) => {
 };
 
 
+     // ================= LOGOUT =================
+
+const logout = async (req, res) => {
+
+    res.clearCookie("token");
+     res.clearCookie("refresToken");
+
+    res.json({
+        message: "Logout successful"
+        
+    });
+
+};
+
+
 // ================= PROFILE =================
 
 const profile = async (req, res) => {
@@ -214,5 +220,6 @@ module.exports = {
     signup,
     login,
     logout,
-    profile
+    profile,
+    refresh
 };

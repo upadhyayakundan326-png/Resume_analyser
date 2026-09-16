@@ -5,13 +5,14 @@ const router = express.Router();
 const {
     signup,
     login,
-    logout
+    logout,
+    refresh
 } = require("../controler/authcontroler");
 
 router.post("/signup", signup);
 
 router.post("/login", login);
-
+router.post("/refresh", refresh);
 router.post("/logout", logout);
 
 module.exports = router;
