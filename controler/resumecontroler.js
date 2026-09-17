@@ -19,12 +19,16 @@ const uploadResume = async (req, res) => {
          console.log(req.file.size)
             console.log(req.file.buffer.length)
 
+    // AFTER USING PDF PARSER WE NEED TO UPLOAD RESUME IN PDF FORMAT
+    //OTHERWISE IT CANNOT READ THE TEXT FROM THE IMAGE 
 
      const parser = new PDFParse({
         data:req.file.buffer
      });
-     const extractedText = await parser.getText();
-      console.log(`extracted text is ${extractedText.text}`)
+     const resultText = await parser.getText();
+     const extractedText = resultText.text
+      console.log(`extracted text is ${extractedText}`)
+      console.log("full result is ",resultText)
     
 
         // 3. Upload PDF to Cloudinary
