@@ -1,5 +1,6 @@
 const Resume = require("../models/resume");
 const cloudinary = require("../config/cloudinary");
+const {PDFParse} = require("pdf-parse")
 
 
 const uploadResume = async (req, res) => {
@@ -12,8 +13,19 @@ const uploadResume = async (req, res) => {
             });
         }
 
-      
-        
+      // PDF PARSING 
+
+      console.log(req.file.mimetype)
+         console.log(req.file.size)
+            console.log(req.file.buffer.length)
+
+
+     const parser = new PDFParse({
+        data:req.file.buffer
+     });
+     const extractedText = await parser.getText();
+      console.log(`extracted text is ${extractedText.text}`)
+    
 
         // 3. Upload PDF to Cloudinary
         const result = await new Promise((resolve, reject) => {
@@ -60,7 +72,8 @@ const uploadResume = async (req, res) => {
 
             message: "Resume uploaded successfully",
 
-            resume: newResume
+            resume: newResume,
+            extractedText:extractedText
 
         });
 
