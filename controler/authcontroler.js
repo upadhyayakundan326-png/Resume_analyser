@@ -1,7 +1,8 @@
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const OTP = require("../models/otp")
+const OTP = require("../models/otp");
+const sendMail = require("../utilits/sendmail");
 
 
 // ================= SIGNUP =================
@@ -46,9 +47,14 @@ const signup = async (req, res) => {
     const otpdata = await OTP.create({
           email,
           otp:otp.toString(),
-          expiredAt
+          expiresAt
 
     })
+       await sendMail(
+          email,
+          "email verification for resume analyzer",
+         `your otp is ${otp} `
+       )
 
         res.status(201).json({
             message: "Signup successful and otp is sent  to your email",
