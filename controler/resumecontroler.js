@@ -1,10 +1,12 @@
 const Resume = require("../models/resume");
 const cloudinary = require("../config/cloudinary");
 const {PDFParse} = require("pdf-parse")
+const{createWorker}= require("tesseract.js")
 
 
 const uploadResume = async (req, res) => {
     try {
+        console.log(req.file)
 
         // 1. Check PDF
         if (!req.file) {
@@ -21,15 +23,52 @@ const uploadResume = async (req, res) => {
 
     // AFTER USING PDF PARSER WE NEED TO UPLOAD RESUME IN PDF FORMAT
     //OTHERWISE IT CANNOT READ THE TEXT FROM THE IMAGE 
+    
 
+    //PDF == PDF- PARSE SE RWXT EXTRACT 
+//IMAGE == TESSERACT OCR SE TEXT EXTRACT   
+let extractedText = "";
+console.log("req recived")
+if(req.file.mimetype==="application/pdf"){
      const parser = new PDFParse({
         data:req.file.buffer
      });
+
+
+
+
+      
      const resultText = await parser.getText();
-     const extractedText = resultText.text
+      extractedText = resultText.text
+      console.log("text working is done")
       console.log(`extracted text is ${extractedText}`)
       console.log("full result is ",resultText)
+      await parser.destroy()
+
+}
+
+
+   console.log("starting of ocr")
+  if(req.file.mimetype==="image/jpeg"||
+    req.file.mimetype==="image/png"||
+    req.file.mimetype==="image/webp"
+  ){
+
+    const worker = await createWorker("eng")
+    console.log("worker is working")
+
+    const answer = await worker.recognize(req.file.buffer)
+    await worker.terminate()
+     extractedText= answer.data.text
+     console.log("done")
     
+  }
+  
+    
+
+
+  
+ 
 
         // 3. Upload PDF to Cloudinary
         const result = await new Promise((resolve, reject) => {
