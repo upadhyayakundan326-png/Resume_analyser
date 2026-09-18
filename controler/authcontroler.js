@@ -1,6 +1,7 @@
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const OTP = require("../models/otp")
 
 
 // ================= SIGNUP =================
@@ -36,9 +37,21 @@ const signup = async (req, res) => {
             email,
             password: hashedPassword
         });
+          // 3. Generate OTP
+    const otp = Math.floor(100000 + Math.random() * 900000);
+
+    // 4. OTP expiry - 5 minutes
+    const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
+     
+    const otpdata = await OTP.create({
+          email,
+          otp:otp.toString(),
+          expiredAt
+
+    })
 
         res.status(201).json({
-            message: "Signup successful",
+            message: "Signup successful and otp is sent  to your email",
             userId: user._id
         });
 
