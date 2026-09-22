@@ -2,6 +2,7 @@ const Resume = require("../models/resume");
 const cloudinary = require("../config/cloudinary");
 const {PDFParse} = require("pdf-parse")
 const{createWorker}= require("tesseract.js")
+const analyzeResume = require("../service/ai_service")
 
 
 const uploadResume = async (req, res) => {
@@ -65,6 +66,7 @@ if(req.file.mimetype==="application/pdf"){
      console.log("done")
     
   }
+  const airesult = await analyzeResume(extractedText)
   
     
 
@@ -118,7 +120,8 @@ if(req.file.mimetype==="application/pdf"){
             message: "Resume uploaded successfully",
 
             resume: newResume,
-            extractedText:extractedText
+            extractedText:extractedText,
+            airesult:airesult
 
         });
 

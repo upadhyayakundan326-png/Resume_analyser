@@ -13,6 +13,8 @@ const resumeRoutes = require("./routes/resumeroutes")
 const authroutes =require("./routes/authroutes")
 const jobroutes = require("./routes/jobroutes")
 
+//FOR CREATING A JOB TO ANALYSE IN AI .
+//WE NEED TO WRITE JOBSCHEMA AND JJKC
 
 const app = express();
 connectDB()
