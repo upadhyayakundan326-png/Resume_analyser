@@ -11,6 +11,7 @@ const cookieParser = require("cookie-parser");
 const connectDB = require("./config/db")
 const resumeRoutes = require("./routes/resumeroutes")
 const authroutes =require("./routes/authroutes")
+const jobroutes = require("./routes/jobroutes")
 
 
 const app = express();
@@ -27,6 +28,7 @@ app.get("/", (req, res) => {
 });
 app.use("/api/resume", resumeRoutes)
 app.use("/api/auth", authroutes)
+app.use("/api/job",jobroutes)
 
 // Server
 const PORT = process.env.PORT || 8000;
