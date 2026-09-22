@@ -2,7 +2,7 @@ const Resume = require("../models/resume");
 const cloudinary = require("../config/cloudinary");
 const {PDFParse} = require("pdf-parse")
 const{createWorker}= require("tesseract.js")
-const analyzeResume = require("../service/ai_service")
+const airesult = require("../service/ai_service")
 
 
 const uploadResume = async (req, res) => {
@@ -66,7 +66,7 @@ if(req.file.mimetype==="application/pdf"){
      console.log("done")
     
   }
-  const airesult = await analyzeResume(extractedText)
+  const analyz = JSON.parse(await airesult(extractedText));
   
     
 
@@ -106,11 +106,11 @@ if(req.file.mimetype==="application/pdf"){
 
             fileUrl: result.secure_url,
 
-            score: 0,
+            score: airesult.score,
 
-            skills: [],
+            skills: airesult.skills,
 
-            analysis: ""
+            analysis: airesult.analysis
 
         });
 
