@@ -53,13 +53,15 @@ if(req.file.mimetype==="application/pdf"){
     req.file.mimetype==="image/png"||
     req.file.mimetype==="image/webp"
   ){
-
+       //WORKERS IS CREATED TO TEX EXTRACTTION IN ENGLISH LANGUAGE
     const worker = await createWorker("eng")
     console.log("worker is working")
-
+       // WORKER RECOGNIZE THE BUFFER 
     const answer = await worker.recognize(req.file.buffer)
+
+         extractedText= answer.data.text
+    //TERMINATE
     await worker.terminate()
-     extractedText= answer.data.text
      console.log("done")
     
   }
