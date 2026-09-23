@@ -1,11 +1,14 @@
 const ai = require("../config/gemini");
 
-const analyzeResume = async (resumeText) => {
-try{
-  const prompt = `
-  Analyze this resume.
+const analyzeResume = async (resumeText, job) => {
+  try {
+    const prompt = `
+Analyze this resume against the job requirements.
 
-  Analyze this resume and return the result ONLY as valid JSON.
+Compare the resume with the required job skills and job description.
+Based on the comparison, return a score, matched skills, analysis, and improvements.
+
+Return the result ONLY as valid JSON.
 
 The JSON must have exactly these fields:
 
@@ -25,20 +28,28 @@ Rules:
 - Do not use code fences.
 - Do not write anything before or after the JSON.
 
-  Resume:
-  ${resumeText}
-  `;
+Job Title:
+${job.title}
 
-  const response = await ai.models.generateContent({
-    model: "gemini-3.6-flash",
-    contents: prompt
-  });
+Required Skills:
+${job.requiredSkills.join(", ")}
 
-  return response.text;
-}
-catch(error){
+Job Description:
+${job.description}
+
+Resume:
+${resumeText}
+`;
+
+    const response = await ai.models.generateContent({
+      model: "gemini-3.6-flash",
+      contents: prompt
+    });
+
+    return response.text;
+  } catch (error) {
     throw error;
-}
+  }
 };
 
 module.exports = analyzeResume;
