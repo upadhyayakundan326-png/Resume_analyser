@@ -55,7 +55,7 @@ const uploadResume = async (req, res) => {
             });
 
             const resultText = await parser.getText();
-
+        
             extractedText = resultText.text;
 
             console.log("PDF text extraction done");
@@ -146,8 +146,9 @@ const uploadResume = async (req, res) => {
             resume: newResume,
 
             extractedText: extractedText,
+               
 
-            airesult: analyz
+          
 
         });
 
