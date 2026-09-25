@@ -16,8 +16,8 @@ The JSON must have exactly these fields:
   "score": 0,
   "skills": [],
   "analysis": "",
-  "improvements": []
-}
+  "improvements":[]
+},
 
 Rules:
 - score must be a number from 0 to 100.

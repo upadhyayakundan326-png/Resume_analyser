@@ -32,8 +32,12 @@ const resumeSchema = new mongoose.Schema(
         analysis: {
             type: String,
             default: ""
-        }
-    },
+        },
+        improvement:{
+            type:[String],
+            default:[]
+        },
+ },
     {
         timestamps: true
     }

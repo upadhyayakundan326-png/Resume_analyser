@@ -134,7 +134,8 @@ const uploadResume = async (req, res) => {
 
             skills: analyz.skills,
 
-            analysis: analyz.analysis
+            analysis: analyz.analysis,
+            improvement:analyz.improvements
 
         });
 
