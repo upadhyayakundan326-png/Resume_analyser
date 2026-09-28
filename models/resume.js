@@ -42,6 +42,12 @@ const resumeSchema = new mongoose.Schema(
         timestamps: true
     }
 );
+// INDEX
+resumeSchema.index({
+    user: 1,
+    createdAt: -1
+});
+
 
 const Resume = mongoose.model("Resume", resumeSchema);
 

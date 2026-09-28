@@ -12,6 +12,7 @@ const connectDB = require("./config/db")
 const resumeRoutes = require("./routes/resumeroutes")
 const authroutes =require("./routes/authroutes")
 const jobroutes = require("./routes/jobroutes")
+const getroute =require("./routes/getroute")
 
 
 //FOR CREATING A JOB TO ANALYSE IN AI .
@@ -32,6 +33,7 @@ app.get("/", (req, res) => {
 app.use("/api/resume", resumeRoutes)
 app.use("/api/auth", authroutes)
 app.use("/api/job",jobroutes)
+app.use("/api/getresume",getroute)
 
 
 // Server
