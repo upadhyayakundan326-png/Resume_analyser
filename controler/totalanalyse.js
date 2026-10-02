@@ -2,7 +2,7 @@ const resume = require("../models/resume")
 
 const analyseresume = async(req,res)=>{
     try{
-const allResume = resume.aggregate([
+const allResume =  await resume.aggregate([
     {
         $match:{
             user:req.user.userId
@@ -10,6 +10,7 @@ const allResume = resume.aggregate([
     },
     {
         $group:{
+            _id:null,
             totalresume:{$sum:1},
             maximunscore:{$max:"$score"},
             minimumscore:{$min:"$score"},
