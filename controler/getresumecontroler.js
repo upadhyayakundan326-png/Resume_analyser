@@ -22,7 +22,7 @@ const getresumes = await resume.find({
 })
  .sort({ createdAt: -1 })
     .skip(skip)
-    limit(limit)
+    .limit(limit)
     
        // Total pages
         const totalPages = Math.ceil(totalResumes / limit)
@@ -33,13 +33,18 @@ const getresumes = await resume.find({
                 page:page,
                  limit:limit,
                  totalResumes:totalResumes,
-                 totalPages:totalPages
+                 totalPages:totalPages,
+                 resumes:getresumes
 
                 
         })
     }
-    catch(error){
-        error:error.message
+    catch(error){ 
+        res.status(400).json({
+
+        
+        message:error.message
+    })
     }
 }
 module.exports =  {getAllResume}
