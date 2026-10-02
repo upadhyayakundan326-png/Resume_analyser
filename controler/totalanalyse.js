@@ -39,4 +39,6 @@ catch(error){
 
 }
 }
+
+module.exports = analyseresume
     

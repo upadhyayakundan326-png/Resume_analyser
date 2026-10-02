@@ -13,6 +13,7 @@ const resumeRoutes = require("./routes/resumeroutes")
 const authroutes =require("./routes/authroutes")
 const jobroutes = require("./routes/jobroutes")
 const getroute =require("./routes/getroute")
+const userdash = require("./routes/userdashroutes")
 
 
 //FOR CREATING A JOB TO ANALYSE IN AI .
@@ -34,6 +35,7 @@ app.use("/api/resume", resumeRoutes)
 app.use("/api/auth", authroutes)
 app.use("/api/job",jobroutes)
 app.use("/api/getresume",getroute)
+app.use("/api/dashboard/dash",userdash) 
 
 
 // Server
