@@ -1,3 +1,4 @@
+const mongoose = require("mongoose")
 const resume = require("../models/resume")
 
 const analyseresume = async(req,res)=>{
@@ -5,7 +6,8 @@ const analyseresume = async(req,res)=>{
 const allResume =  await resume.aggregate([
     {
         $match:{
-            user:req.user.userId
+                user: new mongoose.Types.ObjectId(req.user.userId)
+
         }
     },
     {
@@ -19,18 +21,23 @@ const allResume =  await resume.aggregate([
         }
 
     }
+
   
 ])
+/*console.log("USER ID:", req.user.userId);
+console.log("TYPE:", typeof req.user.userId);
+console.log("RESULT:", allResume);*/
 res.status(200).json({
     success:true,
-     result:allResume[0]||{
+     result:allResume[0]/*||{
         totalresume:0,
          maximunscore:0,
             minimumscore:0,
             averagescore:0
 
 
-    }
+
+    }*/
 
 })
 }

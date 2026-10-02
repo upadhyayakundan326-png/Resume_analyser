@@ -35,7 +35,7 @@ app.use("/api/resume", resumeRoutes)
 app.use("/api/auth", authroutes)
 app.use("/api/job",jobroutes)
 app.use("/api/getresume",getroute)
-app.use("/api/dashboard/dash",userdash) 
+app.use("/api/dashboard",userdash) 
 
 
 // Server
