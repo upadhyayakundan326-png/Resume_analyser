@@ -34,6 +34,7 @@ res.status(200).json({
 })
 }
 catch(error){
+    message:error.message
 
 }
 }
