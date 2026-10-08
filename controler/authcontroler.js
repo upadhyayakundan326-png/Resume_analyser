@@ -1,8 +1,10 @@
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const OTP = require("../models/otp");
+
 const sendMail = require("../utilits/sendmail");
+const {redisClient}= require("../config/redis");
+
 
 
 // ================= SIGNUP =================
@@ -11,6 +13,7 @@ const signup = async (req, res) => {
     try {
 
         const { userName, email, password } = req.body;
+        const otpkey = `otp:${email}`
 
         // check fields
         if (!userName || !email || !password) {
@@ -20,13 +23,7 @@ const signup = async (req, res) => {
         }
 
         // check existing user
-        const existingUser = await User.findOne({ email });
-
-        if (existingUser) {
-            return res.status(400).json({
-                message: "User already exists"
-            });
-        }
+       
 
         // password hash
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -42,14 +39,22 @@ const signup = async (req, res) => {
     const otp = Math.floor(100000 + Math.random() * 900000);
 
     // 4. OTP expiry - 5 minutes
-    const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
+   
      
-    const otpdata = await OTP.create({
+    /*const otpdata = await OTP.create({
           email,
           otp:otp.toString(),
           expiresAt
 
-    })
+
+    })*/
+   await redisClient.setEx(
+       otpkey,
+       300,
+       otp.toString()
+   )
+            
+            
        await sendMail(
           email,
           "email verification for resume analyzer",

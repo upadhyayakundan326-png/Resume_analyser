@@ -1,31 +1,48 @@
-const OTP = require("../models/otp")
-const user = require("../models/user")
+
 const jwt = require("jsonwebtoken");
+const {redisClient}= require("../config/redis")
+const User = require("../models/user");
 
 const verify = async(req,res)=>{
 
     const {email,otp}=req.body
+    const otpKey = `otp:${email}`;
     try{
 
-    const otpData = await OTP.findOne({email,otp})
+          
+    const otpData = await redisClient.get(otpKey)
 
     if(!otpData){
        return res.status(400).json({
-            message:"invalid otp" 
+        success:false,
+            message:"otp expired or not found " 
         })
     }
-         //IF OTP IS VALID UPDATE IS 
+    if(otpData!==otp.toString()){
+        return res.status(200).json({
+           success:false,
+           message:"invalid otp"
 
-    await user.findOneAndUpdate(
-    { email },
-    { isVerified: true }
-);
+        })
+    }
+     const user = await User.findOne({ email });
 
-    //AFTER UPDATE DELETE THE USED OTP
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            });
+        }
 
-    await OTP.findOneAndDelete({
-        _id:otpData._id
-    })
+        // User verify karo
+        user.isVerified = true;
+        await user.save();
+
+
+         //delete the otp
+    await redisClient.del(
+        otpKey
+    )
      res.status(200).json({
       message: "OTP verified successfully"
     });

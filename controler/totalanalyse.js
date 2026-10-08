@@ -19,6 +19,7 @@ const analyseresume = async(req,res)=>{
                 source: "redis",
                 result: JSON.parse(cachedData)
             });
+           
         }
         console.log("data cannot be find in redis ")
 
@@ -55,6 +56,7 @@ await redisClient.setEx(
          300,
          JSON.stringify(allResume[0])
 )
+
 res.status(200).json({
     success:true,
      result:allResume[0],
