@@ -5,6 +5,7 @@ dotenv.config();
 const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
+const{connectRedis} =require("./config/redis")
 
 
 
@@ -21,6 +22,7 @@ const userdash = require("./routes/userdashroutes")
 
 const app = express();
 connectDB()
+connectRedis()
 app.use(cookieParser());
 
 // Middleware
