@@ -5,6 +5,7 @@ dotenv.config();
 const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
+const{connectRedis} =require("./config/redis")
 
 
 
@@ -13,6 +14,9 @@ const resumeRoutes = require("./routes/resumeroutes")
 const authroutes =require("./routes/authroutes")
 const jobroutes = require("./routes/jobroutes")
 const getroute =require("./routes/getroute")
+const userdash = require("./routes/userdashroutes")
+const states = require("./routes/statesroute")
+
 
 
 //FOR CREATING A JOB TO ANALYSE IN AI .
@@ -20,6 +24,9 @@ const getroute =require("./routes/getroute")
 
 const app = express();
 connectDB()
+connectRedis()
+  require("./worker/worker");
+
 app.use(cookieParser());
 
 // Middleware
@@ -34,6 +41,8 @@ app.use("/api/resume", resumeRoutes)
 app.use("/api/auth", authroutes)
 app.use("/api/job",jobroutes)
 app.use("/api/getresume",getroute)
+app.use("/api/dashboard",userdash) 
+app.use("/api/states",states)
 
 
 // Server

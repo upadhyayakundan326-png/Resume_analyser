@@ -37,16 +37,23 @@ const resumeSchema = new mongoose.Schema(
             type:[String],
             default:[]
         },
+       status: {
+            type: String,
+            enum: [
+                "queued",
+                "processing",
+                "completed",
+                "failed"
+            ],
+            default: "queued"
+        }
  },
     {
         timestamps: true
     }
 );
 // INDEX
-resumeSchema.index({
-    user: 1,
-    createdAt: -1
-});
+
 
 
 const Resume = mongoose.model("Resume", resumeSchema);
