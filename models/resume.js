@@ -37,6 +37,16 @@ const resumeSchema = new mongoose.Schema(
             type:[String],
             default:[]
         },
+       status: {
+            type: String,
+            enum: [
+                "queued",
+                "processing",
+                "completed",
+                "failed"
+            ],
+            default: "queued"
+        }
  },
     {
         timestamps: true
