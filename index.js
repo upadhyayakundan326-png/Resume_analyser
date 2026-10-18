@@ -26,11 +26,17 @@ const app = express();
 connectDB()
 connectRedis()
   require("./worker/worker");
+  app.use(
+    cors({
+       origin:"http://localhost:5173" ,
+       credentials:true
+    })
+  )
 
 app.use(cookieParser());
 
 // Middleware
-app.use(cors());
+
 app.use(express.json());
 
 // Test route

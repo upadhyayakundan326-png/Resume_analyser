@@ -8,12 +8,11 @@ const {redisClient}= require("../config/redis");
 
 
 // ================= SIGNUP =================
-
 const signup = async (req, res) => {
     try {
 
         const { userName, email, password } = req.body;
-        const otpkey = `otp:${email}`
+        const otpkey = `otp:${email}`;
 
         // check fields
         if (!userName || !email || !password) {
@@ -22,59 +21,62 @@ const signup = async (req, res) => {
             });
         }
 
+        console.log("STEP 1: Signup started");
+
+        console.log("email checking");
+
         // check existing user
-       
+        const existingUser = await User.findOne({ email }).maxTimeMS(5000);
+
+        console.log("Email query result:", existingUser);
+
+        if (existingUser) {
+            return res.status(409).json({
+                message: "Email already registered"
+            });
+        }
+
+        console.log("STEP 2: Email checked");
+
+        console.log("try to hasing");
 
         // password hash
         const hashedPassword = await bcrypt.hash(password, 10);
-        console.log("hashed password is ",hashedPassword)
 
-        // create user
-        const user = await User.create({
-            userName,
+        console.log("hashed password is ", hashedPassword);
+        console.log("STEP 3: Password hashed");
+
+        // Generate OTP
+        const otp = Math.floor(100000 + Math.random() * 900000);
+
+        // OTP expiry - 5 minutes
+        await redisClient.setEx(
+            otpkey,
+            300,
+            otp.toString()
+        );
+
+        console.log("STEP 4: OTP saved in Redis");
+
+        await sendMail(
             email,
-            password: hashedPassword
-        });
-          // 3. Generate OTP
-    const otp = Math.floor(100000 + Math.random() * 900000);
+            "email verification for resume analyzer",
+            `your otp is ${otp}`
+        );
 
-    // 4. OTP expiry - 5 minutes
-   
-     
-    /*const otpdata = await OTP.create({
-          email,
-          otp:otp.toString(),
-          expiresAt
-
-
-    })*/
-   await redisClient.setEx(
-       otpkey,
-       300,
-       otp.toString()
-   )
-            
-            
-       await sendMail(
-          email,
-          "email verification for resume analyzer",
-         `your otp is ${otp} `
-       )
-
-        res.status(201).json({
-            message: "Signup successful and otp is sent  to your email",
-            userId: user._id
+        return res.status(200).json({
+            success: true,
+            message: "OTP sent successfully. Please verify your email."
         });
 
     } catch (error) {
 
-        res.status(500).json({
+        return res.status(500).json({
             message: error.message
         });
 
     }
 };
-
 
 // ================= LOGIN =================
 //REFRESH TOKEN CREATED IN LOGIN SECTION 
