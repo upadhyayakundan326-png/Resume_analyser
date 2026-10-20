@@ -49,14 +49,21 @@ const signup = async (req, res) => {
         // Generate OTP
         const otp = Math.floor(100000 + Math.random() * 900000);
 
-        // OTP expiry - 5 minutes
-        await redisClient.setEx(
-            otpkey,
-            300,
-            otp.toString()
-        );
+         const otpData = {
+            userName,
+            email,
+            password: hashedPassword,
+            otp: otp.toString()
+        };
+     
 
-        console.log("STEP 4: OTP saved in Redis");
+await redisClient.setEx(
+    otpkey,
+    300,
+    JSON.stringify(otpData)
+);
+
+console.log("STEP 4: OTP and signup data saved in Redis");
 
         await sendMail(
             email,

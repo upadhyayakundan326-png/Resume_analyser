@@ -16,6 +16,7 @@ const jobroutes = require("./routes/jobroutes")
 const getroute =require("./routes/getroute")
 const userdash = require("./routes/userdashroutes")
 const states = require("./routes/statesroute")
+const resetpassword = require("./routes/resetroutes")
 
 
 
@@ -49,6 +50,7 @@ app.use("/api/job",jobroutes)
 app.use("/api/getresume",getroute)
 app.use("/api/dashboard",userdash) 
 app.use("/api/states",states)
+app.use("/api/changepass",resetpassword)
 
 
 // Server

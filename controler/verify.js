@@ -1,50 +1,64 @@
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
+
 const { redisClient } = require("../config/redis");
 const User = require("../models/user");
 
 const verify = async (req, res) => {
-
-    const { userName, email, password, otp } = req.body;
+    const { email, otp } = req.body;
     const otpKey = `otp:${email}`;
 
     try {
-
-        const otpData = await redisClient.get(otpKey);
-
-        if (!otpData) {
+        // Check required fields
+        if (!email || !otp) {
             return res.status(400).json({
                 success: false,
-                message: "otp expired or not found"
+                message: "Email and OTP are required"
             });
         }
 
-        if (otpData !== otp.toString()) {
+        // Get OTP data from Redis
+        const storedData = await redisClient.get(otpKey);
+
+        if (!storedData) {
             return res.status(400).json({
                 success: false,
-                message: "invalid otp"
+                message: "OTP expired or not found"
             });
         }
 
-        const user = await User.findOne({ email });
+        // Convert Redis JSON string into object
+        const otpData = JSON.parse(storedData);
+
+        // Compare OTP
+        if (String(otpData.otp).trim() !== String(otp).trim()) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid OTP"
+            });
+        }
+
+        // Check whether email already exists
+        const user = await User.findOne({
+            email: otpData.email
+        });
 
         if (user) {
+            await redisClient.del(otpKey);
+
             return res.status(409).json({
                 success: false,
                 message: "Email already registered"
             });
         }
 
-        const hashedPassword = await bcrypt.hash(password, 10);
-
+        // Create user after successful OTP verification
         const newUser = await User.create({
-            userName,
-            email,
-            password: hashedPassword,
+            userName: otpData.userName,
+            email: otpData.email,
+            password: otpData.password,
             isVerified: true
         });
 
-        // delete the otp
+        // Delete OTP data from Redis
         await redisClient.del(otpKey);
 
         return res.status(201).json({
@@ -54,7 +68,10 @@ const verify = async (req, res) => {
         });
 
     } catch (error) {
+        console.error("Verify error:", error);
+
         return res.status(500).json({
+            success: false,
             message: error.message
         });
     }
