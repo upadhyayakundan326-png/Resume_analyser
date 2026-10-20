@@ -16,6 +16,7 @@ const jobroutes = require("./routes/jobroutes")
 const getroute =require("./routes/getroute")
 const userdash = require("./routes/userdashroutes")
 const states = require("./routes/statesroute")
+const resetpassword = require("./routes/resetroutes")
 
 
 
@@ -26,11 +27,17 @@ const app = express();
 connectDB()
 connectRedis()
   require("./worker/worker");
+  app.use(
+    cors({
+       origin:"http://localhost:5173" ,
+       credentials:true
+    })
+  )
 
 app.use(cookieParser());
 
 // Middleware
-app.use(cors());
+
 app.use(express.json());
 
 // Test route
@@ -43,6 +50,7 @@ app.use("/api/job",jobroutes)
 app.use("/api/getresume",getroute)
 app.use("/api/dashboard",userdash) 
 app.use("/api/states",states)
+app.use("/api/changepass",resetpassword)
 
 
 // Server
