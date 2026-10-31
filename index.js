@@ -18,6 +18,8 @@ const userdash = require("./routes/userdashroutes")
 const states = require("./routes/statesroute")
 const resetpassword = require("./routes/resetroutes")
 const deleteroute= require("./routes/deleteroute")
+const getprofile = require("./routes/getprofile")
+
 
 
 
@@ -53,6 +55,7 @@ app.use("/api/dashboard",userdash)
 app.use("/api/states",states)
 app.use("/api/changepass",resetpassword)
 app.use ("/api/delete", deleteroute)
+app.use ("/api/getprofile", getprofile)
 
 
 // Server
