@@ -1,7 +1,7 @@
 
 const { Worker } = require("bullmq");
 
-const redisConnection = require("../config/redis");
+const redisConnection = require("../config/bullmqRedis");
 const Resume = require("../models/resume");
 const Job = require("../models/job");
 const airesult = require("../service/ai_service");
