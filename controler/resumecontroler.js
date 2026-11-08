@@ -115,7 +115,9 @@ const uploadResume = async (req, res) => {
             status: "queued"
         });
 
-        // 8. Add task to BullMQ queue
+      //queue job 
+
+
         let queueJob;
 
         try {
