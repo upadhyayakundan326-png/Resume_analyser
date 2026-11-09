@@ -42,6 +42,7 @@ app.use(cookieParser());
 // Middleware
 
 app.use(express.json());
+require("./worker/worker")
 
 // Test route
 app.get("/", (req, res) => {
