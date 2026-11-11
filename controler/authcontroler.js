@@ -137,6 +137,8 @@ const login = async (req, res) => {
 
         // cookie
         //access
+        const isProduction = process.env.NODE_ENV === "production";
+
        res.cookie("token", accesstoken, {
     httpOnly: true,
     secure: isProduction,
@@ -204,11 +206,16 @@ const refresh = async (req, res) => {
         );
 
         // 5. Naya access token cookie mein save karo
-        res.cookie("token", newAccessToken, {
-            httpOnly: true,
-            secure: false,
-            sameSite: "lax"
-        });
+       
+          const isProduction = process.env.NODE_ENV === "production";
+
+res.cookie("token", newAccessToken, {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
+    maxAge: 24 * 60 * 60 * 1000
+});
+        
 
         // 6. Response
         res.json({
@@ -230,7 +237,7 @@ const refresh = async (req, res) => {
 const logout = async (req, res) => {
 
     res.clearCookie("token");
-     res.clearCookie("refresToken");
+     res.clearCookie("refreshToken");
 
     res.json({
         message: "Logout successful"
