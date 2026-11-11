@@ -29,12 +29,12 @@ const getprofile = require("./routes/getprofile")
 const app = express();
 connectDB()
 connectRedis()
-  require("./worker/worker");
+
   app.use(
     cors({
        origin:["http://localhost:5173" ,
                
-             "resume-frontend-s4jp.vercel.app"
+             "https://resume-frontend-s4jp.vercel.app"
 
        ],
        credentials:true
