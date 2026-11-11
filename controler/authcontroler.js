@@ -137,16 +137,19 @@ const login = async (req, res) => {
 
         // cookie
         //access
-        res.cookie("token", accesstoken, {
-            httpOnly: true,
-            secure: false,
-            sameSite: "lax"
-        });
-        res.cookie("refresToken", refreshtoken, {
-            httpOnly: true,
-            secure: false,
-            sameSite: "lax"
-        });
+       res.cookie("token", accesstoken, {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
+    maxAge: 24 * 60 * 60 * 1000
+});
+      
+res.cookie("refreshToken", refreshtoken, {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
+    maxAge: 7 * 24 * 60 * 60 * 1000
+});
 
         res.status(200).json({
             message: "Login successful",
