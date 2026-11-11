@@ -32,7 +32,11 @@ connectRedis()
   require("./worker/worker");
   app.use(
     cors({
-       origin:"http://localhost:5173" ,
+       origin:["http://localhost:5173" ,
+               
+             "resume-frontend-s4jp.vercel.app"
+
+       ],
        credentials:true
     })
   )
@@ -42,6 +46,7 @@ app.use(cookieParser());
 // Middleware
 
 app.use(express.json());
+require("./worker/worker")
 
 // Test route
 app.get("/", (req, res) => {
