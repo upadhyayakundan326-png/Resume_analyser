@@ -34,7 +34,7 @@ connectRedis()
     cors({
        origin:["http://localhost:5173" ,
                
-              "https://resume-analyser-icl4.onrender.com"
+             "resume-frontend-s4jp.vercel.app"
 
        ],
        credentials:true
