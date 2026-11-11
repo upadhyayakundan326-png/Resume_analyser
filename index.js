@@ -32,7 +32,11 @@ connectRedis()
   require("./worker/worker");
   app.use(
     cors({
-       origin:"http://localhost:5173" ,
+       origin:["http://localhost:5173" ,
+               
+              "https://resume-analyser-icl4.onrender.com"
+
+       ],
        credentials:true
     })
   )
