@@ -1,3 +1,11 @@
+const dns = require("dns");
+
+if (process.env.NODE_ENV !== "production") {
+    dns.setServers(["8.8.8.8", "8.8.4.4"]);
+}
+
+require("dotenv").config();
+
 const dotenv = require("dotenv");
 
 dotenv.config(); 
@@ -64,8 +72,19 @@ app.use ("/api/getprofile", getprofile)
 
 
 // Server
+////const PORT = process.env.PORT || 8000;
+
+//app.listen(PORT, () => {
+ //   console.log(`Server running on port ${PORT}`);
+//});
+
+
 const PORT = process.env.PORT || 8000;
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server running on port ${PORT}`);
+});
+
+server.on("error", (err) => {
+    console.log("SERVER ERROR:", err);
 });
