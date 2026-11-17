@@ -24,43 +24,45 @@ const analyseresume = async(req,res)=>{
         console.log("data cannot be find in redis ")
 
 
-const allResume =  await resume.aggregate([
-    {
-        
-        $match:{
-                user: currentUser
 
+const allResume = await resume.aggregate([
+    {
+        $match: {
+            user: currentUser
         }
     },
     {
-        $group:{
-            _id:null,
-            totalresume:{$sum:1},
-            maximunscore:{$max:"$score"},
-            minimumscore:{$min:"$score"},
-            averagescore:{$avg:"$score"}
-
+        $group: {
+            _id: null,
+            totalresume: { $sum: 1 },
+            maximunscore: { $max: "$score" },
+            minimumscore: { $min: "$score" },
+            averagescore: { $avg: "$score" }
         }
-
     }
+]);
 
-  
-])
-/*console.log("USER ID:", req.user.userId);
-console.log("TYPE:", typeof req.user.userId);
-console.log("RESULT:", allResume);*/
+// Agar user ke paas resume nahi hai
+const result = allResume[0] || {
+    totalresume: 0,
+    maximunscore: 0,
+    minimumscore: 0,
+    averagescore: 0
+};
 
-// set eky in redis 
+// Redis mein valid data save karo
 await redisClient.setEx(
-         cachkey,
-         300,
-         JSON.stringify(allResume[0])
-)
+    cachkey,
+    300,
+    JSON.stringify(result)
+);
 
-res.status(200).json({
-    success:true,
-     result:allResume[0],
-     source:"mongo"
+return res.status(200).json({
+    success: true,
+    result: result,
+    source: "mongo"
+});
+
      /*||{
      
         totalresume:0,
