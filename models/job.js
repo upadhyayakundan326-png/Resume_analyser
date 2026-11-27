@@ -20,6 +20,12 @@ const jobSchema = new mongoose.Schema(
     requiredSkills: {
       type: [String],
       default: []
+    },
+       // Job owner
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true
     }
   },
   { 

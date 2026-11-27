@@ -20,7 +20,8 @@ const createJob = async (req, res) => {
             title,
             company,
             description,
-            requiredSkills: skills
+            requiredSkills: skills,
+             user: req.user.userId
         });
 
         return res.status(201).json({
@@ -40,7 +41,9 @@ const createJob = async (req, res) => {
 // Fetch saved jobs
 const getJobs = async (req, res) => {
     try {
-        const jobs = await Job.find().sort({ createdAt: -1 });
+        const jobs = await Job.find({
+    user: req.user.userId
+}).sort({ createdAt: -1 });
 
         return res.status(200).json({
             success: true,
@@ -66,7 +69,10 @@ const deleteSavedJob = async (req, res) => {
             });
         }
 
-        const deletedJob = await Job.findByIdAndDelete(jobId);
+        const deletedJob = await Job.findOneAndDelete({
+    _id: jobId,
+    user: req.user.userId
+});
 
         if (!deletedJob) {
             return res.status(404).json({
